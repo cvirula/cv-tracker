@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Seguimiento de Préstamos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Sistema de Préstamos</h1>
+                    <p>Inicia sesión para continuar</p>
+                </div>
+                <form id="loginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i>
+                            Usuario
+                        </label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Contraseña
+                        </label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Iniciar Sesión
+                    </button>
+                </form>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla Principal -->
+    <div id="mainScreen" class="screen">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-shield-alt"></i>
+                <span>Sistema de Préstamos</span>
+            </div>
+            <div class="nav-user">
+                <span id="currentUser"></span>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button>
+            </div>
+        </nav>
+
+        <div class="container">
+            <!-- Panel de Búsqueda -->
+            <div class="search-panel">
+                <h2><i class="fas fa-search"></i> Búsqueda por DPI</h2>
+                <div class="search-form">
+                    <div class="form-group">
+                        <label for="dpiSearch">Número de DPI:</label>
+                        <input type="text" id="dpiSearch" placeholder="Ingrese el DPI del cliente" maxlength="13">
+                    </div>
+                    <button id="searchBtn" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        Buscar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Resultados de Búsqueda -->
+            <div id="searchResults" class="results-panel" style="display: none;">
+                <h3><i class="fas fa-user"></i> Información del Cliente</h3>
+                <div id="clientInfo" class="client-card">
+                    <!-- La información del cliente se mostrará aquí -->
+                </div>
+            </div>
+
+            <!-- Lista de Clientes (para todos los usuarios) -->
+            <div id="clientsViewPanel" class="clients-view-panel">
+                <h2><i class="fas fa-list"></i> Lista de Clientes</h2>
+                <div id="clientsViewList" class="clients-table">
+                    <!-- La lista se cargará dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Panel de Administración (solo para admin) -->
+            <div id="adminPanel" class="admin-panel" style="display: none;">
+                <div class="admin-header">
+                    <h2><i class="fas fa-cog"></i> Panel de Administración</h2>
+                    <div class="admin-badge">
+                        <i class="fas fa-crown"></i>
+                        Solo Administrador
+                    </div>
+                </div>
+                
+                <!-- Formulario para agregar clientes -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-user-plus"></i> Agregar Cliente</h3>
+                    <form id="addClientForm" class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newDpi">DPI:</label>
+                                <input type="text" id="newDpi" required maxlength="13">
+                            </div>
+                            <div class="form-group">
+                                <label for="newNombre">Nombre:</label>
+                                <input type="text" id="newNombre" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newCantidad">Cantidad de Deuda:</label>
+                                <input type="number" id="newCantidad" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newEmpresa">Empresa:</label>
+                                <input type="text" id="newEmpresa" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i>
+                            Agregar Cliente
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Formulario para crear usuarios -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-user-plus"></i> Crear Usuario</h3>
+                    <form id="addUserForm" class="admin-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUsername">Usuario:</label>
+                                <input type="text" id="newUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="newUserPassword">Contraseña:</label>
+                                <input type="password" id="newUserPassword" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i>
+                            Crear Usuario
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Lista de clientes -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-list"></i> Lista de Clientes</h3>
+                    <div id="clientsList" class="clients-table">
+                        <!-- La lista se cargará dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Lista de usuarios -->
+                <div class="admin-section">
+                    <h3><i class="fas fa-users"></i> Gestión de Usuarios</h3>
+                    <div id="usersList" class="users-table">
+                        <!-- La lista se cargará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar cliente -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Editar Cliente</h3>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editClientForm" class="modal-form">
+                <input type="hidden" id="editClientId">
+                <div class="form-group">
+                    <label for="editDpi">DPI:</label>
+                    <input type="text" id="editDpi" required maxlength="13">
+                </div>
+                <div class="form-group">
+                    <label for="editNombre">Nombre:</label>
+                    <input type="text" id="editNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCantidad">Cantidad de Deuda:</label>
+                    <input type="number" id="editCantidad" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmpresa">Empresa:</label>
+                    <input type="text" id="editEmpresa" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Guardar
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificaciones -->
+    <div id="notification" class="notification"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
